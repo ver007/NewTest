@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <!--<script type="text/javascript" src="jquery-1.11.2.js"></script>-->
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css"/>
+    <script type="text/javascript" src="d3.js"></script>
+    <title></title>
+</head>
+<body>
+<style>
+    svg line{
+        stroke: grey;
+        stroke-width: 2;
+    }
+</style>
+<script type="text/javascript">
+    <!--设置画布-->
+    var w1 = 2048;
+    var h1 = 2048;
+    var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w1)          //设置宽度
+            .attr("height", h1);        //设置高度
+	
+	var nodes ;
+	var links ;
+	$.ajax({
+		url:"ai.json",
+		dataType:"json",
+		async:false,
+		success:function(data){
+			console.info(data);
+			var jsonData = eval(data);
+			nodes = jsonData.nodes;
+			links = jsonData.links;
+		}
+	});
+	
+//    画线
+    for(var j=0;j<links.length;j++){
+        var list = new  Array();
+        for (var i=0;i<nodes.length;i++){
+            if(nodes[i].id == links[j].source || nodes[i].id == links[j].target){
+                   list.push(nodes[i]);
+            }
+        }
+        svg.append("line") // <-A
+                .attr("x1", list[0].x+520)
+                .attr("y1", list[0].y+520)
+                .attr("x2", list[1].x+520)
+                .attr("y2", list[1].y+520);
+    }
+
+//    画出json中的点
+    for (var t=0;t<nodes.length;t++){
+          var circles = svg.append("circle")           //  cx 圆心x坐标  cy圆心y坐标   r半径
+                           .attr("cx", nodes[t].x+520)
+                           .attr("cy", nodes[t].y+520) //将圆心放到svg高度中间
+                           .attr("r", 6)
+                           .attr("fill", "blue")         //给各圆填充//黄色
+                           //.attr("stroke", "orange")       //给各圆边涂成橘黄
+                           //.attr("stroke-width",2);
+    }
+
+
+</script>
+
+</body>
+</html>
